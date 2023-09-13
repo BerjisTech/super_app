@@ -19,11 +19,6 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   const router = useRouter();
-  useEffect(() => {
-    if (!AuthService.isAuthenticated()) {
-      AuthService.redirectToLogin(router);
-    }
-  }, []);
   return (
     <html lang="en">
       <body className={inter.className}>{children}</body>

@@ -56,8 +56,6 @@ export const AuthService = {
     },
 
     redirectToLogin(router: any): void {
-        if (window.location.pathname.indexOf('auth') === -1 || window.location.pathname !== '/') {
-            router.push('/auth/signin');
-        }
+        router.push('/auth/signin');
     }
 };
