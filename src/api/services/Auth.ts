@@ -3,8 +3,9 @@ import { User } from '@interface/User';
 
 export const signIn = async (email: string, password: string): Promise<User> => {
     try {
-        const response = await api.post('/login', { email, password });
-        localStorage.setItem('token', response.data.token);
+        const response = await api.post('/signin', { onagi: {email: email, password: password} });
+        const authorizationHeader = response.headers.authorization;
+        if(authorizationHeader) localStorage.setItem('token', authorizationHeader.split(' ')[1]);
         return response.data;
     } catch (error) {
         throw error;
@@ -13,7 +14,7 @@ export const signIn = async (email: string, password: string): Promise<User> => 
 
 export const signUp = async (email: string, password: string, name: string): Promise<User> => {
     try {
-        const response = await api.post('/signup', { email, password, name });
+        const response = await api.post('/signup', { onagi: {email, password, name} });
         return response.data;
     } catch (error) {
         throw error;
