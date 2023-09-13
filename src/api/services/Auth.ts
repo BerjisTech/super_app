@@ -1,32 +1,63 @@
 import api from '@/api/api';
-import { User } from '@interface/User';
+import { AuthRequest, RegisterRequest } from '@interface/User';
 
-export const signIn = async (email: string, password: string): Promise<User> => {
-    try {
-        const response = await api.post('/signin', { onagi: {email: email, password: password} });
-        const authorizationHeader = response.headers.authorization;
-        if(authorizationHeader) localStorage.setItem('token', authorizationHeader.split(' ')[1]);
-        return response.data;
-    } catch (error) {
-        throw error;
-    }
-}
+export const AuthService = {
+    async login(credentials: AuthRequest, router: any): Promise<any> {
+        const url = '/signin';
+        try {
+            const response = await api.post(url, { onagi: credentials });
+            const authorizationHeader = response.headers.authorization;
+            if (authorizationHeader) {
+                localStorage.setItem('token', authorizationHeader.split(' ')[1]);
+                localStorage.setItem('currentUser', JSON.stringify(response.data.status.data.onagi));
+                router.push('/');
+            }
+            return response.data;
+        } catch (error: any) {
+            throw error;
+        }
+    },
 
-export const signUp = async (email: string, password: string, name: string): Promise<User> => {
-    try {
-        const response = await api.post('/signup', { onagi: {email, password, name} });
-        return response.data;
-    } catch (error) {
-        throw error;
-    }
-}
+    async register(details: RegisterRequest, router: any): Promise<any> {
+        const url = '/signup';
+        try {
+            const response = await api.post(url, { onagi: details });
+            const authorizationHeader = response.headers.authorization;
+            if (authorizationHeader) {
+                localStorage.setItem('token', authorizationHeader.split(' ')[1]);
+                router.push('/');
+            } else {
+                router.push('/auth/signin');
+            }
+            return response.data;
+        } catch (error: any) {
+            throw error;
+        }
+    },
 
-export const signOut = async (): Promise<void> => {
-    try {
-        localStorage.removeItem('token');
-        const response = await api.post('/logout');
-        return response.data;
-    } catch (error) {
-        throw error;
+    async logout(router: any): Promise<void> {
+        const url = '/signout';
+        const token = localStorage.getItem('token');
+        try {
+            const response = await api.delete(url, { headers: { Authorization: `${token}` } });
+            localStorage.removeItem('currentUser');
+            localStorage.removeItem('token');
+            router.push('/');
+        } catch (error: any) {
+            localStorage.removeItem('currentUser');
+            localStorage.removeItem('token');
+            router.push('/');
+            throw error;
+        }
+    },
+
+    isAuthenticated(): boolean {
+        return !!localStorage.getItem('token');
+    },
+
+    redirectToLogin(router: any): void {
+        if (window.location.pathname.indexOf('auth') === -1 || window.location.pathname !== '/') {
+            router.push('/auth/signin');
+        }
     }
-}
+};

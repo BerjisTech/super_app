@@ -1,5 +1,10 @@
-export interface User {
-    name: string;
+export interface AuthRequest {
     email: string;
-    id?: number; // id is optional because it might not exist for new users
+    password: string;
+}
+
+export interface RegisterRequest {
+    email: string;
+    password: string;
+    name: string;
 }

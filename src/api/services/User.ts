@@ -1,7 +1,7 @@
 import api from '@/api/api';
-import { User } from '@interface/User';
+import { AuthRequest } from '@interface/User';
 
-export const getUsers = async (): Promise<User[]> => {
+export const getUsers = async (): Promise<AuthRequest[]> => {
     try {
         const response = await api.get('/users');
         return response.data;

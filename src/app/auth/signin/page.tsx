@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation'
-import { signIn } from '@service/Auth';
+import { AuthService } from '@service/Auth';
 
 const page = () => {
   const router = useRouter();
@@ -17,7 +17,7 @@ const page = () => {
     setLoading(true); // Set loading to true when starting the request
     setError(null); // Reset error state
     try {
-      const user = await signIn(email, password);
+      const user = await AuthService.login({email: email, password: password}, router);
       setResponse(user); // Set response
       console.log('User signed in:', user);
       // Navigate to another page or do something else
