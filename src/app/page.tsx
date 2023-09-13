@@ -1,5 +1,5 @@
 import Image from 'next/image'
-import TopNav from './components/nav/TopNav'
+import TopNav from '@components/nav/TopNav'
 
 export default function Home() {
   return (
